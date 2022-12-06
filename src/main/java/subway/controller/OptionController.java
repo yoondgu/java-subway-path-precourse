@@ -6,23 +6,36 @@ import static subway.view.constants.menu.OptionCommand.BACK;
 import static subway.view.constants.menu.OptionCommand.BY_DISTANCE;
 import static subway.view.constants.menu.OptionCommand.BY_TIME;
 
+import subway.view.InputView;
+import subway.view.OutputView;
 import subway.view.constants.menu.OptionCommand;
 
 public class OptionController {
+    private static OptionController instance;
+    private final InputView inputView;
 
-    private OptionController() {
+
+    private OptionController(InputView inputView) {
+        this.inputView = inputView;
     }
 
-    static void selectMenu() {
+    public static OptionController getInstance(InputView inputView) {
+        if (instance == null) {
+            instance = new OptionController(inputView);
+        }
+        return instance;
+    }
+
+    void selectMenu() {
         RunStatus runStatus = RUNNING;
-//        while (runStatus == RUNNING) {
-//            OutputView.printPathMenus();
-//            SubCommand command = InputView.inputSubCommand();
-//            runStatus = runSelectedMenu(command);
-//        }
+        while (runStatus == RUNNING) {
+            OutputView.printOptionMenus();
+            OptionCommand command = inputView.inputOptionCommand();
+            runStatus = runSelectedMenu(command);
+        }
     }
 
-    private static RunStatus runSelectedMenu(OptionCommand command) {
+    private RunStatus runSelectedMenu(OptionCommand command) {
         if (command == BACK) {
             return STOPPED;
         }
@@ -34,4 +47,7 @@ public class OptionController {
         }
         return RUNNING;
     }
+
+    // TODO 출발/도착역 입력, 최단 거리 경로 조회, 출력
+    // TODO 출발/도착역 입력, 최소 시간 경로 조회, 출력
 }

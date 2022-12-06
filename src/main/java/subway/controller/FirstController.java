@@ -14,6 +14,7 @@ import subway.view.constants.menu.MainCommand;
 
 public class FirstController {
     private static FirstController instance;
+    private static OptionController optionController;
     private static InputView inputView;
     private RunStatus runStatus = STOPPED;
 
@@ -28,6 +29,7 @@ public class FirstController {
     public static void initializeInstance(Scanner scanner) {
         if (instance == null) {
             inputView = InputView.getInstance(scanner);
+            optionController = OptionController.getInstance(inputView);
             instance = new FirstController();
         }
     }
@@ -36,7 +38,6 @@ public class FirstController {
         runStatus = RUNNING;
         while (runStatus == RUNNING) {
             ErrorInterceptor.runUntilGetLegalArguments(this::selectMainMenu);
-            return;
         }
     }
 
@@ -56,7 +57,7 @@ public class FirstController {
 
     private enum ControllerHandler {
 
-        SEARCH_ROAD(MainCommand.SEARCH_ROAD, OptionController::selectMenu),
+        SEARCH_ROAD(MainCommand.SEARCH_ROAD, optionController::selectMenu),
         ;
 
         private static final Map<MainCommand, Runnable> runnableByMainCommand = Arrays.stream(values())
