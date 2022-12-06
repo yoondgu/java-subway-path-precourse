@@ -1,5 +1,11 @@
 package subway.service;
 
+import static subway.domain.constants.ErrorMessage.DEPART_AND_ARRIVE_SAME;
+import static subway.domain.constants.ErrorMessage.PATH_INVALID;
+import static subway.domain.constants.ErrorMessage.PATH_NOT_FOUND;
+import static subway.domain.constants.ErrorMessage.STATION_NOT_FOUND;
+import static subway.domain.constants.ErrorMessage.STATION_NOT_IN_LINE;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
@@ -10,10 +16,10 @@ public class SearchValidator {
 
     private static void validateStationName(String stationName) {
         if (!StationRepository.hasStation(stationName)) {
-            throw new IllegalArgumentException("존재하지 않는 역 이름입니다.");
+            throw new IllegalArgumentException(STATION_NOT_FOUND.getValue());
         }
         if (!PathRepository.isLinedStation(stationName)) {
-            throw new IllegalArgumentException("노선에 등록되지 않은 역 이름입니다.");
+            throw new IllegalArgumentException(STATION_NOT_IN_LINE.getValue());
         }
     }
 
@@ -21,16 +27,16 @@ public class SearchValidator {
         validateStationName(departureStationName);
         validateStationName(arrivalStationNames);
         if (Objects.equals(departureStationName, arrivalStationNames)) {
-            throw new IllegalArgumentException("출발역과 도착역은 동일할 수 없습니다.");
+            throw new IllegalArgumentException(DEPART_AND_ARRIVE_SAME.getValue());
         }
     }
 
     public static void validateSearchedPath(List<String> paths) {
         if (paths.isEmpty()) {
-            throw new IllegalArgumentException("출발역과 도착역 간 이동 가능한 경로가 존재하지 않습니다.");
+            throw new IllegalArgumentException(PATH_NOT_FOUND.getValue());
         }
         if (isNotConnected(paths)) {
-            throw new IllegalArgumentException("계산한 경로가 올바르지 않습니다.");
+            throw new IllegalArgumentException(PATH_INVALID.getValue());
         }
     }
 
