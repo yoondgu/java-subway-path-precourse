@@ -39,7 +39,9 @@ public class Path {
             return false;
         }
         Path path = (Path) o;
-        return distance == path.distance && time == path.time && twoStations.equals(path.twoStations);
+        return distance == path.distance && time == path.time &&
+                (twoStations.get(0).equals(path.twoStations.get(0))) &&
+                (twoStations.get(1).equals(path.twoStations.get(1)));
     }
 
     @Override

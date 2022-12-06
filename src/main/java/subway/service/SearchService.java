@@ -27,18 +27,20 @@ public class SearchService {
     public SearchResultDTO searchByDistance(String departureStationName, String arrivalStationName) {
         SearchValidator.validateStations(departureStationName, arrivalStationName);
         WeightedMultigraph<String, DefaultWeightedEdge> graph = generatePathGraphByDistance();
+
         GraphPath shortestPathByDistance = getShortestPaths(graph, departureStationName, arrivalStationName);
         List<String> paths = shortestPathByDistance.getVertexList();
 
         SearchValidator.validateSearchedPath(paths);
         double totalDistance = shortestPathByDistance.getWeight();
-        double totalTime = calculateTotalAmount(generatePathGraphByTime(), paths);
+        double totalTime = computeTotalAmount(generatePathGraphByTime(), paths);
         return new SearchResultDTO(new SelectedStationsDTO(paths), totalDistance, totalTime);
     }
 
     // TODO 최소 시간 경로 조회
 
-    private double calculateTotalAmount(WeightedMultigraph<String, DefaultWeightedEdge> graph, List<String> paths) {
+    private double computeTotalAmount(WeightedMultigraph<String, DefaultWeightedEdge> graph, List<String> paths) {
+        SearchValidator.validateEdgesInSearchedPath(paths);
         double totalAmount = 0;
         for (int index = 0; index < paths.size() - 1; index++) {
             if (index + 1 > paths.size() - 1) {

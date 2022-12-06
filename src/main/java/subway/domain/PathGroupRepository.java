@@ -48,4 +48,9 @@ public class PathGroupRepository {
     public static boolean isLinedStation(String stationNames) {
         return getAllLinedStationNames().contains(stationNames);
     }
+
+    public static boolean hasPath(String departureStationName, String arrivalStationName) {
+        return pathGroups.stream()
+                .anyMatch(pathGroup -> pathGroup.hasPath(departureStationName, arrivalStationName));
+    }
 }
