@@ -44,4 +44,8 @@ public class PathGroupRepository {
     private static List<String> getStationsOfPath(Path path) {
         return List.of(path.get1stStationName(), path.get2ndStationName());
     }
+
+    public static boolean isLinedStation(String stationNames) {
+        return getAllLinedStationNames().contains(stationNames);
+    }
 }

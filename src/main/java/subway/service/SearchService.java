@@ -1,11 +1,15 @@
 package subway.service;
 
 import java.util.List;
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import subway.domain.Path;
 import subway.domain.PathGroupByLine;
 import subway.domain.PathGroupRepository;
+import subway.dto.SearchResultDTO;
+import subway.dto.SelectedStationsDTO;
 
 public class SearchService {
     private static SearchService instance;
@@ -20,20 +24,37 @@ public class SearchService {
         return instance;
     }
 
-    // TODO 최단 거리 경로 조회
-    // TODO 최소 시간 경로 조회
+    public SearchResultDTO searchByDistance(String departureStationName, String arrivalStationName) {
+        SearchValidator.validateStations(departureStationName, arrivalStationName);
+        WeightedMultigraph<String, DefaultWeightedEdge> graph = generatePathGraphByDistance();
+        GraphPath shortestPathByDistance = getShortestPaths(graph, departureStationName, arrivalStationName);
+        List<String> paths = shortestPathByDistance.getVertexList();
 
-    private void setEdgeWeightByDistance(WeightedMultigraph<String, DefaultWeightedEdge> graph, List<Path> paths) {
-        paths.forEach(path ->
-                graph.setEdgeWeight(graph.addEdge(path.get1stStationName(), path.get2ndStationName()),
-                        path.getDistance())
-        );
+        SearchValidator.validateSearchedPath(paths);
+        double totalDistance = shortestPathByDistance.getWeight();
+        double totalTime = calculateTotalAmount(generatePathGraphByTime(), paths);
+        return new SearchResultDTO(new SelectedStationsDTO(paths), totalDistance, totalTime);
     }
 
-    private void setEdgeWeightByTime(WeightedMultigraph<String, DefaultWeightedEdge> graph, List<Path> paths) {
-        paths.forEach(path ->
-                graph.setEdgeWeight(graph.addEdge(path.get1stStationName(), path.get2ndStationName()), path.getTime())
-        );
+    // TODO 최소 시간 경로 조회
+
+    private double calculateTotalAmount(WeightedMultigraph<String, DefaultWeightedEdge> graph, List<String> paths) {
+        double totalAmount = 0;
+        for (int index = 0; index < paths.size() - 1; index++) {
+            if (index + 1 > paths.size() - 1) {
+                break;
+            }
+            DefaultWeightedEdge edge = graph.getEdge(paths.get(index), paths.get(index + 1));
+            totalAmount += graph.getEdgeWeight(edge);
+        }
+        return totalAmount;
+    }
+
+    private GraphPath getShortestPaths(WeightedMultigraph<String, DefaultWeightedEdge> graph,
+                                       String departureStationName,
+                                       String arrivalStationName) {
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        return dijkstraShortestPath.getPath(departureStationName, arrivalStationName);
     }
 
     private WeightedMultigraph<String, DefaultWeightedEdge> generatePathGraphByDistance() {
@@ -54,5 +75,18 @@ public class SearchService {
                 .stream().map(PathGroupByLine::getPaths)
                 .forEach(paths -> setEdgeWeightByTime(graph, paths));
         return graph;
+    }
+
+    private void setEdgeWeightByDistance(WeightedMultigraph<String, DefaultWeightedEdge> graph, List<Path> paths) {
+        paths.forEach(path ->
+                graph.setEdgeWeight(graph.addEdge(path.get1stStationName(), path.get2ndStationName()),
+                        path.getDistance())
+        );
+    }
+
+    private void setEdgeWeightByTime(WeightedMultigraph<String, DefaultWeightedEdge> graph, List<Path> paths) {
+        paths.forEach(path ->
+                graph.setEdgeWeight(graph.addEdge(path.get1stStationName(), path.get2ndStationName()), path.getTime())
+        );
     }
 }

@@ -1,8 +1,8 @@
 package subway.view.constants.menu;
 
 public enum OptionMenu implements Menu {
-    PATH_CREATE("구간 등록", OptionCommand.BY_DISTANCE),
-    PATH_DELETE("구간 삭제", OptionCommand.BY_TIME),
+    PATH_CREATE("최단 거리", OptionCommand.BY_DISTANCE),
+    PATH_DELETE("최단 시간", OptionCommand.BY_TIME),
     BACK("돌아가기", OptionCommand.BACK);
 
     private final String value;
