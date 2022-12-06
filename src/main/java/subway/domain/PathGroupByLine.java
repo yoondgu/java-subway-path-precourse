@@ -10,4 +10,8 @@ public class PathGroupByLine {
         this.lineName = lineName;
         this.paths = paths;
     }
+
+    public List<Path> getPaths() {
+        return paths;
+    }
 }

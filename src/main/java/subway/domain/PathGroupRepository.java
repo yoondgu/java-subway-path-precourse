@@ -2,7 +2,9 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PathGroupRepository {
     private static final List<PathGroupByLine> pathGroups = new ArrayList<>();
@@ -27,5 +29,19 @@ public class PathGroupRepository {
         return Collections.unmodifiableList(pathGroups);
     }
 
-    // TODO getAllPaths
+    public static Set<String> getAllLinedStationNames() {
+        Set<String> allLinedStationNames = new HashSet<>();
+        pathGroups().stream()
+                .map(PathGroupByLine::getPaths)
+                .forEach(paths -> addAllStationNames(paths, allLinedStationNames));
+        return allLinedStationNames;
+    }
+
+    private static void addAllStationNames(List<Path> paths, Set<String> stationNames) {
+        paths.forEach(path -> stationNames.addAll(getStationsOfPath(path)));
+    }
+
+    private static List<String> getStationsOfPath(Path path) {
+        return List.of(path.get1stStationName(), path.get2ndStationName());
+    }
 }

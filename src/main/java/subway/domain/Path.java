@@ -14,6 +14,22 @@ public class Path {
         this.time = time;
     }
 
+    public String get1stStationName() {
+        return twoStations.get(0);
+    }
+
+    public String get2ndStationName() {
+        return twoStations.get(1);
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
