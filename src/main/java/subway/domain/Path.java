@@ -1,25 +1,24 @@
 package subway.domain;
 
 import java.util.List;
-import java.util.Objects;
 
 public class Path {
-    List<String> twoStations;
-    int distance;
-    int time;
+    private final List<String> twoStationNames;
+    private final int distance;
+    private final int time;
 
-    public Path(List<String> twoStations, int distance, int time) {
-        this.twoStations = twoStations;
+    public Path(List<String> twoStationNames, int distance, int time) {
+        this.twoStationNames = twoStationNames;
         this.distance = distance;
         this.time = time;
     }
 
     public String get1stStationName() {
-        return twoStations.get(0);
+        return twoStationNames.get(0);
     }
 
     public String get2ndStationName() {
-        return twoStations.get(1);
+        return twoStationNames.get(1);
     }
 
     public int getDistance() {
@@ -30,22 +29,14 @@ public class Path {
         return time;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Path path = (Path) o;
-        return distance == path.distance && time == path.time &&
-                (twoStations.get(0).equals(path.twoStations.get(0))) &&
-                (twoStations.get(1).equals(path.twoStations.get(1)));
+    public boolean hasStation(String stationName) {
+        return twoStationNames.contains(stationName);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(twoStations, distance, time);
+    public boolean containsEqual(String departureStationName, String arrivalStationName) {
+        if (!twoStationNames.contains(departureStationName)) {
+            return false;
+        }
+        return twoStationNames.contains(arrivalStationName);
     }
 }

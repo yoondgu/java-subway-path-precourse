@@ -13,18 +13,18 @@ import subway.view.OutputView;
 import subway.view.constants.InputMessage;
 import subway.view.constants.menu.OptionCommand;
 
-public class OptionController {
-    private static OptionController instance;
+public class PathSearchController {
+    private static PathSearchController instance;
     private final InputView inputView;
     private final SearchService searchService = SearchService.getInstance();
 
-    private OptionController(InputView inputView) {
+    private PathSearchController(InputView inputView) {
         this.inputView = inputView;
     }
 
-    public static OptionController getInstance(InputView inputView) {
+    public static PathSearchController getInstance(InputView inputView) {
         if (instance == null) {
-            instance = new OptionController(inputView);
+            instance = new PathSearchController(inputView);
         }
         return instance;
     }
@@ -43,17 +43,25 @@ public class OptionController {
             return STOPPED;
         }
         if (command == BY_DISTANCE) {
-            String departureStationName = inputView.inputName(InputMessage.STATION_TO_DEPART);
-            String arrivalStationName = inputView.inputName(InputMessage.STATION_TO_ARRIVE);
-            SearchResultDTO searchResultDTO = searchService.searchByDistance(departureStationName, arrivalStationName);
-            OutputView.printSearchResult(searchResultDTO);
+            searchShortestPath();
         }
         if (command == BY_TIME) {
-            // TODO 경로 조회
+            searchFastestPath();
         }
         return RUNNING;
     }
 
-    // TODO 출발/도착역 입력, 최단 거리 경로 조회, 출력
-    // TODO 출발/도착역 입력, 최소 시간 경로 조회, 출력
+    private void searchFastestPath() {
+        String departureStationName = inputView.inputName(InputMessage.STATION_TO_DEPART);
+        String arrivalStationName = inputView.inputName(InputMessage.STATION_TO_ARRIVE);
+        SearchResultDTO searchResultDTO = searchService.searchFastestPath(departureStationName, arrivalStationName);
+        OutputView.printSearchResult(searchResultDTO);
+    }
+
+    private void searchShortestPath() {
+        String departureStationName = inputView.inputName(InputMessage.STATION_TO_DEPART);
+        String arrivalStationName = inputView.inputName(InputMessage.STATION_TO_ARRIVE);
+        SearchResultDTO searchResultDTO = searchService.searchShortestPath(departureStationName, arrivalStationName);
+        OutputView.printSearchResult(searchResultDTO);
+    }
 }
