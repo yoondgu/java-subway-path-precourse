@@ -3,6 +3,7 @@ package subway.view.constants;
 public enum OutputMessage {
     MAIN_DISPLAY_HEADER("메인 화면"),
     OPTION_DISPLAY_HEADER("경로 기준"),
+    SEARCH_RESULT_HEADER("조회 결과"),
 
     BORDER_LINE("---");
 

@@ -5,8 +5,8 @@ public enum Format {
     HEADER("## %s"),
     ERROR("[ERROR] %s"),
     MENU("%s. %s"),
-    TOTAL_DISTANCE("총 거리: %dkm"),
-    TOTAL_TIME("총 시간: %d분");
+    TOTAL_DISTANCE("총 거리: %.0fkm"),
+    TOTAL_TIME("총 시간: %.0f분");
 
     private final String value;
 

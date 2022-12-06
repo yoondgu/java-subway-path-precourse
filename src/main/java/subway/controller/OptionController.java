@@ -6,6 +6,7 @@ import static subway.view.constants.menu.OptionCommand.BACK;
 import static subway.view.constants.menu.OptionCommand.BY_DISTANCE;
 import static subway.view.constants.menu.OptionCommand.BY_TIME;
 
+import subway.dto.SearchResultDTO;
 import subway.service.SearchService;
 import subway.view.InputView;
 import subway.view.OutputView;
@@ -44,8 +45,8 @@ public class OptionController {
         if (command == BY_DISTANCE) {
             String departureStationName = inputView.inputName(InputMessage.STATION_TO_DEPART);
             String arrivalStationName = inputView.inputName(InputMessage.STATION_TO_ARRIVE);
-            System.out.println(searchService.searchByDistance(departureStationName, arrivalStationName));
-            // TODO 결과 출력
+            SearchResultDTO searchResultDTO = searchService.searchByDistance(departureStationName, arrivalStationName);
+            OutputView.printSearchResult(searchResultDTO);
         }
         if (command == BY_TIME) {
             // TODO 경로 조회
